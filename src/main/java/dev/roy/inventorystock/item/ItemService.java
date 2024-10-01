@@ -38,13 +38,13 @@ public class ItemService {
         ))).map(itemDtoMapper);
     }
 
-    public void createItem(ItemDto itemDto) {
+    public Item createItem(ItemDto itemDto) {
         Item item = ItemEntityMapper.mapItemDtoToEntity(itemDto, new Item());
         Optional<Item> optionalCode = itemRepository.findByCode(item.getCode());
         if (optionalCode.isPresent()) {
             throw new ItemAlreadyExistsException("Item already registered with given code " + itemDto.getCode());
         }
-        Item savedItem = itemRepository.save(item);
+        return itemRepository.save(item);
     }
 
     public boolean updateItemById(Long id, ItemDto itemDto) {

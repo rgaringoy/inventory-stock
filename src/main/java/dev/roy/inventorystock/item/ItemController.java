@@ -52,7 +52,7 @@ public class ItemController {
     @PostMapping
     public ResponseEntity<ResponseDto> createNewItem(@Valid @RequestBody ItemDto itemDto) {
         log.info("ItemController createItem(): {}", itemDto);
-        itemService.createItem(itemDto);
+        Item item = itemService.createItem(itemDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new ResponseDto(ResponseStatusConstants.STATUS_201, ResponseStatusConstants.MESSAGE_201));
