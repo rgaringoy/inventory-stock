@@ -74,6 +74,18 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
+				<configuration>
+					<skip>false</skip>
+					<output>file</output>
+					<append>true</append>
+					<excludes>
+						<exclude>**/order/**</exclude>
+						<exclude>**/response/**</exclude>
+						<exclude>**/exception/**</exclude>
+						<exclude>**/audit/**</exclude>
+						<exclude>**/Application.class</exclude>
+					</excludes>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
@@ -99,8 +111,8 @@
 									<limits>
 										<limit>
 											<counter>LINE</counter>
-											<value>COVERED RATIO</value>
-											<minimum>0%</minimum>
+											<value>COVEREDRATIO</value>
+											<minimum>40%</minimum>
 										</limit>
 									</limits>
 								</rule>

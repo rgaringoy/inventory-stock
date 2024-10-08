@@ -9,11 +9,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -32,24 +32,24 @@ class ItemServiceTest {
     private Item item;
     private ItemDto itemDto;
 
-    @BeforeEach
-    void setUp() {
+            @BeforeEach
+            void setUp() {
 
-        item = new Item(
-                1L,
-                "CODE123456",
-                "Jac Daniels",
-                "Nose Light with plenty of sweetnesrererr",
-                5,
-                null);
+                item = new Item(
+                        1L,
+                        "CODE123456",
+                        "Jac Daniels",
+                        "Nose Light with plenty of sweetnesrererr",
+                        5,
+                        null);
 
-        itemDto = new ItemDto(
-                1L,
-                "CODE123456",
-                "Jac Daniels",
-                "Nose Light with plenty of sweetnesrererr",
-                5);
-    }
+                itemDto = new ItemDto(
+                        1L,
+                        "CODE123456",
+                        "Jac Daniels",
+                        "Nose Light with plenty of sweetnesrererr",
+                        5);
+            }
 
     @Test
     void getAllItems_ShouldReturnListOfItemDto() {
@@ -147,6 +147,102 @@ class ItemServiceTest {
         verify(itemRepository, times(1)).save(any(Item.class));
     }
 
+    @Test
+    void updateItem_ShouldUpdateItem_WhenItemIdExist() {
+        long id = 1L;
+        when(itemRepository.findById(id)).thenReturn(Optional.ofNullable(item));
+        when(itemRepository.save(any(Item.class))).thenReturn(item);
 
+        boolean isUpdated = underTest.updateItemById(id, itemDto);
+
+        assertThat(isUpdated).isTrue();
+        verify(itemRepository, times(1)).findById(id);
+        verify(itemRepository, times(1)).save(item);
+    }
+
+    @Test
+    void updateItemById_shouldThrowException_WhenItemIdNotExists() {
+        long id = 1L;
+        when(itemRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> underTest.updateItemById(id, itemDto))
+                .isInstanceOf(ResourceNotFoundException.class);
+        verify(itemRepository, times(1)).findById(id);
+        verify(itemRepository, never()).save(any());
+    }
+
+    @Test
+    void updateItemByCode_ShouldUpdateItem_WhenItemCodeExist() {
+        String code = "CODE123456";
+        when(itemRepository.findByCode(code)).thenReturn(Optional.ofNullable(item));
+        when(itemRepository.save(any(Item.class))).thenReturn(item);
+
+        boolean isUpdated = underTest.updateItemByCode(code, itemDto);
+
+        assertThat(isUpdated).isTrue();
+        verify(itemRepository, times(1)).findByCode(code);
+        verify(itemRepository, times(1)).save(item);
+    }
+
+    @Test
+    void updateItemByCode_shouldThrowException_WhenItemCodeNotExists() {
+        String code = "CODE123456";
+        when(itemRepository.findByCode(code)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> underTest.updateItemByCode(code, itemDto))
+                .isInstanceOf(ResourceNotFoundException.class);
+        verify(itemRepository, times(1)).findByCode(code);
+        verify(itemRepository, never()).save(any());
+    }
+
+    @Test
+    void addItemStockByQtyById_shouldAddItemQty_WhenItemIdExist() {
+        long id = 1L;
+        when(itemRepository.findById(id)).thenReturn(Optional.of(item));
+        when(itemRepository.save(any())).thenReturn(item);
+
+        boolean isUpdated = underTest.addItemStockQtyById(id, itemDto);
+
+        assertThat(isUpdated).isTrue();
+        assertThat(10).isEqualTo(item.getStockQty());
+        verify(itemRepository, times(1)).findById(id);
+        verify(itemRepository, times(1)).save(any(Item.class));
+    }
+
+    @Test
+    void addItemStockByQtyById_shouldNThrowException_WhenItemIdNotExist() {
+        long id = 1L;
+        when(itemRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> underTest.addItemStockQtyById(id, itemDto))
+                .isInstanceOf(ResourceNotFoundException.class);
+        verify(itemRepository, times(1)).findById(id);
+        verify(itemRepository, never()).save(any(Item.class));
+    }
+
+    @Test
+    void addItemStockQtyByCode_shouldAddItemQty_WhenItemCodeExist() {
+        String code = "CODE123456";
+        when(itemRepository.findByCode(code)).thenReturn(Optional.of(item));
+        when(itemRepository.save(any())).thenReturn(item);
+
+        boolean isUpdated = underTest.addItemStockQtyByCode(code, itemDto);
+
+        assertThat(isUpdated).isTrue();
+        assertThat(10).isEqualTo(item.getStockQty());
+        verify(itemRepository, times(1)).findByCode(code);
+        verify(itemRepository, times(1)).save(any(Item.class));
+    }
+
+    @Test
+    void addItemStockQtyByCode_shouldNThrowException_WhenItemCodeNotExist() {
+        String code = "CODE123456";
+        when(itemRepository.findByCode(code)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> underTest.addItemStockQtyByCode(code, itemDto))
+                .isInstanceOf(ResourceNotFoundException.class);
+        verify(itemRepository, times(1)).findByCode(code);
+        verify(itemRepository, never()).save(any(Item.class));
+    }
 
 }
