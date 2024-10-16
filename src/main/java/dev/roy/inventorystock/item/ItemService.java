@@ -81,7 +81,7 @@ public class ItemService {
         return isUpdated;
     }
 
-        public boolean addItemStockQtyByCode(String code, ItemDto itemDto) {
+    public boolean addItemStockQtyByCode(String code, ItemDto itemDto) {
         boolean isUpdated = false;
         Item itemByCode = itemRepository.findByCode(code).orElseThrow(
                 () -> new ResourceNotFoundException("Item", "ItemCode", code)

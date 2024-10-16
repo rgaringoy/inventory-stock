@@ -90,7 +90,7 @@ public class ItemController {
         }
     }
 
-    @PatchMapping(path = ADD_STOCK_BY_ITEM_ID)
+    @PutMapping(path = ADD_STOCK_BY_ITEM_ID)
     public ResponseEntity<ResponseDto> addStockQtyById(@Valid @PathVariable Long id,
                                                       @RequestBody ItemDto itemDto) {
         log.info("ItemController addStockQtyById(): {}, itemDto: {}", id, itemDto);
@@ -106,7 +106,7 @@ public class ItemController {
         }
     }
 
-    @PatchMapping(path = ADD_STOCK_BY_ITEM_CODE)
+    @PutMapping(path = ADD_STOCK_BY_ITEM_CODE)
     public ResponseEntity<ResponseDto> addStockQtyByCode(@Valid @PathVariable String code,
                                                         @RequestBody ItemDto itemDto) {
         log.info("ItemController addStockQtyByCode(): {}, itemDto: {}", code, itemDto);
